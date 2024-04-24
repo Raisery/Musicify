@@ -36,8 +36,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#db
+# db
 *.db
 *.sql
 *.toml
+
+# prettier
+./prettier.json
 

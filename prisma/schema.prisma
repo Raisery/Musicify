@@ -55,8 +55,43 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Guilds {
-  id       String @id @default(cuid())
-  guildId  String @unique
-  name     String
+model AdvertGuild {
+  id              String @id
+  name            String
+  durationLimit   DateTime?
+  songs           AdvertSong[]
+  users           AdvertUser[]
+  adverts         Advert[]
 }
+
+model AdvertSong {
+  id          String @id @default(cuid())
+  guild       AdvertGuild @relation(fields: [guilId], references: [id])
+  guilId      String
+  duration    DateTime?
+  title       String
+  path        String
+  createAt    DateTime @default(now())
+  author      AdvertUser @relation(fields: [authorId], references: [id])
+  authorId    String
+  adverts     Advert[]
+}
+
+model AdvertUser {
+  id        String @id @unique
+  name      String
+  guilds    AdvertGuild[]
+  songs     AdvertSong[]
+  adverts   Advert[]
+}
+
+model Advert {
+  id        String @id @default(cuid())
+  user      AdvertUser @relation(fields: [userId], references: [id])
+  userId    String
+  guild     AdvertGuild @relation(fields: [guildId], references: [id])
+  guildId   String
+  song      AdvertSong  @relation(fields: [songId], references: [id])
+  songId    String
+}
+
