@@ -78,7 +78,7 @@ model AdvertSong {
 }
 
 model AdvertUser {
-  id        String @id @unique
+  id        String @id
   name      String
   guilds    AdvertGuild[]
   songs     AdvertSong[]
