@@ -1,10 +1,14 @@
 import { AdvertSongType } from '@/lib/AdvertTypes'
 import prisma from '@/lib/prisma'
 import { isRequestValid } from '@/lib/requestValidation'
+const apiToken = process.env.API_TOKEN as string
 
 export async function GET(request: Request, { params }: { params: { songId: string } }) {
 	const songId = params.songId
 
+	const requestValidation = isRequestValid(request, apiToken)
+	if (requestValidation.status.status !== 200)
+		return Response.json(requestValidation.message, requestValidation.status)
 	const songData = await prisma.advertSong.findUnique({
 		where: {
 			id: songId,
@@ -16,7 +20,6 @@ export async function GET(request: Request, { params }: { params: { songId: stri
 export async function DELETE(request: Request, { params }: { params: { songId: string } }) {
 	const songId = params.songId
 	//request validation
-	const apiToken = process.env.API_TOKEN as string
 	const requestValidation = isRequestValid(request, apiToken)
 	if (requestValidation.status.status !== 200)
 		return Response.json(requestValidation.message, requestValidation.status)

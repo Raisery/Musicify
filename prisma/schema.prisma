@@ -70,7 +70,7 @@ model AdvertSong {
   guilId      String
   duration    DateTime?
   title       String
-  path        String
+  path        String @unique
   createAt    DateTime @default(now())
   author      AdvertUser @relation(fields: [authorId], references: [id])
   authorId    String

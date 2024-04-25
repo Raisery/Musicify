@@ -2,11 +2,11 @@ import { AdvertUserUpdateType } from '@/lib/AdvertTypes'
 import prisma from '@/lib/prisma'
 import { isRequestValid } from '@/lib/requestValidation'
 
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
-	const slug = params.slug
+export async function GET(request: Request, { params }: { params: { userId: string } }) {
+	const userId = params.userId
 	const user = await prisma.advertUser.findUnique({
 		where: {
-			id: slug,
+			id: userId,
 		},
 		include: {
 			guilds: true,
@@ -18,8 +18,8 @@ export async function GET(request: Request, { params }: { params: { slug: string
 	return Response.json(user)
 }
 
-export async function POST(request: Request, { params }: { params: { slug: string } }) {
-	const slug = params.slug
+export async function POST(request: Request, { params }: { params: { userId: string } }) {
+	const userId = params.userId
 
 	//request validation
 	const apiToken = process.env.API_TOKEN as string
@@ -51,7 +51,7 @@ export async function POST(request: Request, { params }: { params: { slug: strin
 					},
 				},
 				where: {
-					id: slug,
+					id: userId,
 				},
 			})
 		}
