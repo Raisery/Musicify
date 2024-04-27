@@ -66,7 +66,7 @@ model AdvertGuild {
 
 model AdvertSong {
   id          String @id @default(cuid())
-  guild       AdvertGuild @relation(fields: [guilId], references: [id])
+  guild       AdvertGuild @relation(fields: [guilId], references: [id], onDelete: Cascade)
   guilId      String
   duration    DateTime?
   title       String
@@ -87,11 +87,11 @@ model AdvertUser {
 
 model Advert {
   id        String @id @default(cuid())
-  user      AdvertUser @relation(fields: [userId], references: [id])
+  user      AdvertUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  guild     AdvertGuild @relation(fields: [guildId], references: [id])
+  guild     AdvertGuild @relation(fields: [guildId], references: [id], onDelete: Cascade)
   guildId   String
-  song      AdvertSong  @relation(fields: [songId], references: [id])
+  song      AdvertSong  @relation(fields: [songId], references: [id], onDelete: Cascade)
   songId    String
 }
 
