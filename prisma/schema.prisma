@@ -56,42 +56,66 @@ model VerificationToken {
 }
 
 model AdvertGuild {
-  id              String @id
-  name            String
-  durationLimit   DateTime?
-  songs           AdvertSong[]
-  users           AdvertUser[]
-  adverts         Advert[]
+  id                      String @id
+  
+  name                    String
+  durationLimit           DateTime?
+  
+  songs                   AdvertSong[]        @relation(name: "song.guildId")
+  users                   AdvertUser[]        @relation(name: "userguilds")
+  adverts                 Advert[]            @relation(name: "advert.guildId")
+  events                  AdvertGuildEvent[]  @relation(name: "event.guildId")
 }
 
 model AdvertSong {
-  id          String @id @default(cuid())
-  guild       AdvertGuild @relation(fields: [guilId], references: [id], onDelete: Cascade)
-  guilId      String
-  duration    DateTime?
-  title       String
-  path        String @unique
-  createAt    DateTime @default(now())
-  author      AdvertUser @relation(fields: [authorId], references: [id])
-  authorId    String
-  adverts     Advert[]
+  id                    String                @id @default(cuid())
+
+  title                 String
+  duration              DateTime?
+  defaultVolume         Float
+  isGlobal              Boolean               @default(false)
+
+  guildId               String    
+  authorId              String    
+
+  createAt              DateTime              @default(now())
+
+  guild                 AdvertGuild           @relation(name: "song.guildId",fields: [guildId], references: [id], onDelete: Cascade)
+  author                AdvertUser            @relation(name:"song.authorId",fields: [authorId], references: [id])
+  adverts               Advert[]              @relation(name: "advert.dongId")
+  events                AdvertGuildEvent[]    @relation(name: "event.songId")
 }
 
 model AdvertUser {
   id        String @id
   name      String
-  guilds    AdvertGuild[]
-  songs     AdvertSong[]
-  adverts   Advert[]
+  
+  guilds    AdvertGuild[] @relation(name: "userguilds")
+  songs     AdvertSong[]  @relation(name: "song.authorId")
+  adverts   Advert[]      @relation(name: "advert.userId")
 }
 
 model Advert {
   id        String @id @default(cuid())
-  user      AdvertUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  guild     AdvertGuild @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  
+  active    Boolean @default(true)
+  
   guildId   String
-  song      AdvertSong  @relation(fields: [songId], references: [id], onDelete: Cascade)
+  userId    String
   songId    String
+  
+  guild     AdvertGuild @relation(name: "advert.guildId",fields: [guildId], references: [id], onDelete: Cascade)
+  user      AdvertUser @relation(name: "advert.userId",fields: [userId], references: [id], onDelete: Cascade)
+  song      AdvertSong  @relation(name: "advert.dongId",fields: [songId], references: [id], onDelete: Cascade)
 }
 
+model AdvertGuildEvent {
+  id      String @id @default(cuid())
+
+  name    String
+  songId  String
+  guildId String
+
+  guild   AdvertGuild @relation(name: "event.guildId",fields: [guildId], references: [id])
+  song    AdvertSong @relation(name: "event.songId",fields: [songId], references: [id])
+}

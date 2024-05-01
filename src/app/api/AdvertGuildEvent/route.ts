@@ -3,7 +3,7 @@ import actionOnRequest from '@/lib/actionOnRequest'
 
 export async function POST(request: Request) {
 	return actionOnRequest(request, async body => {
-		return await prisma.advertSong.create({
+		return await prisma.advertGuildEvent.create({
 			data: body,
 		})
 	})
@@ -11,6 +11,6 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
 	return actionOnRequest(request, () => {
-		return prisma.advertSong.fields
+		return prisma.advertGuildEvent.fields
 	})
 }

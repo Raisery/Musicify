@@ -1,37 +1,46 @@
-import { AdvertSongType } from '@/lib/AdvertTypes'
+import actionOnRequest from '@/lib/actionOnRequest'
 import prisma from '@/lib/prisma'
-import { isRequestValid } from '@/lib/requestValidation'
-const apiToken = process.env.API_TOKEN as string
 
 export async function GET(request: Request, { params }: { params: { songId: string } }) {
 	const songId = params.songId
 
-	const requestValidation = isRequestValid(request, apiToken)
-	if (requestValidation.status.status !== 200)
-		return Response.json(requestValidation.message, requestValidation.status)
-	const songData = await prisma.advertSong.findUnique({
-		where: {
-			id: songId,
-		},
+	return actionOnRequest(request, async () => {
+		console.log('GET SONG')
+		return await prisma.advertSong.findUnique({
+			where: {
+				id: songId,
+			},
+			include: {
+				author: true,
+				guild: true,
+				adverts: true,
+				events: true,
+			},
+		})
 	})
-	return Response.json(songData)
+}
+
+export async function POST(request: Request, { params }: { params: { songId: string } }) {
+	const songId = params.songId
+
+	return actionOnRequest(request, async body => {
+		return await prisma.advertSong.update({
+			where: {
+				id: songId,
+			},
+			data: body,
+		})
+	})
 }
 
 export async function DELETE(request: Request, { params }: { params: { songId: string } }) {
 	const songId = params.songId
-	//request validation
-	const requestValidation = isRequestValid(request, apiToken)
-	if (requestValidation.status.status !== 200)
-		return Response.json(requestValidation.message, requestValidation.status)
-	try {
-		const song = await prisma.advertSong.delete({
+
+	return actionOnRequest(request, async () => {
+		return await prisma.advertSong.delete({
 			where: {
 				id: songId,
 			},
 		})
-
-		return Response.json({ message: 'Song deleted with success' }, { status: 202 })
-	} catch (error) {
-		return Response.json(error, { status: 400 })
-	}
+	})
 }
