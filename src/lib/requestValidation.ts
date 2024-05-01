@@ -19,10 +19,30 @@ export function isTokenValid({
 		return { message: { message: 'Missing token' }, status: { status: 401 } }
 	}
 	const authorizationToken = authorization.split(' ')
-	if (authorizationToken[0] !== 'Bot' || !authorizationToken[1] || authorizationToken[1] !== apiToken) {
+	if (
+		authorizationToken[0] !== 'Bot' ||
+		!authorizationToken[1] ||
+		authorizationToken[1] !== apiToken
+	) {
 		return { message: { message: 'Invalid token' }, status: { status: 401 } }
 	}
 
+	return { message: { message: 'Access granted' }, status: { status: 200 } }
+}
+
+export function isRequestValidwithBody(
+	request: Request,
+	apiToken: string
+): requestValidationReturnType {
+	// return error if there is no request
+	if (!request) return { message: { message: 'no request' }, status: { status: 0 } }
+	//token verification
+	const authorization = headers().get('authorization')
+	const tokenValidation = isTokenValid({ authorization, apiToken })
+	if (tokenValidation.status.status !== 200) return tokenValidation
+	//body verification
+	const body = request.body
+	if (!body) return { message: { message: 'Empty body' }, status: { status: 400 } }
 	return { message: { message: 'Access granted' }, status: { status: 200 } }
 }
 
@@ -33,8 +53,5 @@ export function isRequestValid(request: Request, apiToken: string): requestValid
 	const authorization = headers().get('authorization')
 	const tokenValidation = isTokenValid({ authorization, apiToken })
 	if (tokenValidation.status.status !== 200) return tokenValidation
-	//body verification
-	const body = request.body
-	if (!body) return { message: { message: 'Empty body' }, status: { status: 400 } }
 	return { message: { message: 'Access granted' }, status: { status: 200 } }
 }
