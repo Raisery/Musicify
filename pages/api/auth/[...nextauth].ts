@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma'
+import sleep from '@/lib/sleep'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { create } from 'domain'
 import { connect } from 'http2'
@@ -83,6 +84,7 @@ export const authConfig = {
 							}
 						}
 					}
+					await sleep(1000)
 					return true
 				} catch (err) {
 					console.error(err)

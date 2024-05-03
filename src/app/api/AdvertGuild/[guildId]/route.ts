@@ -19,7 +19,14 @@ export async function POST(request: Request, { params }: { params: { guildId: st
 			where: {
 				id: guildId,
 			},
-			data: body,
+			data: {
+				users: {
+					connectOrCreate: {
+						where: { id: 'member.user.id' },
+						create: { id: 'member.user.id', name: 'member.user.username' },
+					},
+				},
+			},
 		})
 	})
 }

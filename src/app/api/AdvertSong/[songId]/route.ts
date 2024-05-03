@@ -5,7 +5,6 @@ export async function GET(request: Request, { params }: { params: { songId: stri
 	const songId = params.songId
 
 	return actionOnRequest(request, async () => {
-		console.log('GET SONG')
 		return await prisma.advertSong.findUnique({
 			where: {
 				id: songId,

@@ -27,3 +27,19 @@ body {
 		text-wrap: balance;
 	}
 }
+::-webkit-scrollbar {
+	/* Customize the scrollbar width */
+	width: 5px;
+}
+
+::-webkit-scrollbar-track {
+	/* Customize the scrollbar track */
+	background-color: rgba(255, 255, 255, 0.531);
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	/* Customize the scrollbar thumb */
+	background-color: rgb(255, 85, 0);
+	border-radius: 10px;
+}

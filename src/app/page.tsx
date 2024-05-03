@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { authConfig } from '../../pages/api/auth/[...nextauth]'
-import PrimaryLinkButton from '@/components/layout/PrimaryLinkButton'
+import PrimaryLinkButton from '@/ui/layout/PrimaryLinkButton'
+
 export default async function Home() {
 	const session = await getServerSession(authConfig)
 	return (

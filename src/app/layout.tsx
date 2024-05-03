@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import { Inter, Jersey_25 } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/layout/Header'
+import Header from '@/ui/layout/Header'
+import { Suspense } from 'react'
+import Loading from '@/ui/loading/loading'
 
 export const metadata: Metadata = {
 	title: 'Discordify',
@@ -18,10 +19,12 @@ export default function RootLayout({
 			<body className={'w-screen h-screen p-8'}>
 				<main
 					id='root-layout'
-					className='w-full h-full rounded-lg bg-gradient-linear flex flex-col'
+					className='w-full h-full overflow-hidden rounded-lg bg-gradient-linear flex flex-col'
 				>
 					<Header />
-					{children}
+					<Suspense fallback={<Loading />}>
+						<div className='w-full overflow-hidden'>{children}</div>
+					</Suspense>
 				</main>
 			</body>
 		</html>
