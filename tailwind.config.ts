@@ -13,9 +13,6 @@ const config: Config = {
 				'gradient-conic':
 					'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 			},
-			fontFamily: {
-				Jersey: ['"Jersey 10"', 'sans-serif'],
-			},
 			animation: {
 				'spin-slow': 'spin 6s linear infinite',
 				swell: 'swell 2s ease-in infinite',

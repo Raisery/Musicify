@@ -1,8 +1,10 @@
-import { Advert, AdvertGuild, AdvertSong, AdvertUser } from '@prisma/client'
-
-export type AdvertUserFull = AdvertUser & {
-	guilds: AdvertGuild[]
-	songs: AdvertSong[]
-	adverts: Advert[]
+export enum EventType {
+	OPEN_STREAM = 'OPEN_STREAM',
+	CLOSE_STREAM = 'CLOSE_STREAM',
+	CONNECTION = 'CONNECTION',
+	DECONNECTION = 'DECONNECTION',
+	MUTE = 'MUTE',
+	UNMUTE = 'UNMUTE',
+	DEAF = 'DEAF',
+	UNDEAF = 'UNDEAF',
 }
-export type AdvertGuildFull = AdvertGuild & { adverts: Advert[] }

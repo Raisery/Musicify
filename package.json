@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "npm-run-all --parallel watch db-start",
+		"dev": "npm-run-all --parallel next-dev db-start",
 		"build": "next build",
 		"start": "npm-run-all --parallel next-start db-start",
 		"lint": "next lint",

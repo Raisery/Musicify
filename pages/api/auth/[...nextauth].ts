@@ -1,8 +1,6 @@
 import prisma from '@/lib/prisma'
 import sleep from '@/lib/sleep'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import { create } from 'domain'
-import { connect } from 'http2'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { Adapter } from 'next-auth/adapters'
 import Discord from 'next-auth/providers/discord'
@@ -52,9 +50,9 @@ export const authConfig = {
 					},
 				})
 				const userGuilds = await res.json()
-				const botGuild = await prisma.advertGuild.findMany({ where: { id: { not: 'a' } } })
+				const botGuild = await prisma.guild.findMany({ where: { id: { not: 'a' } } })
 				try {
-					await prisma.advertUser.upsert({
+					await prisma.nobleUser.upsert({
 						where: {
 							id: account.providerAccountId as string,
 						},
@@ -69,7 +67,7 @@ export const authConfig = {
 					for (const guild of botGuild) {
 						for (const userGuild of userGuilds) {
 							if (guild.id === userGuild.id) {
-								await prisma.advertGuild.update({
+								await prisma.guild.update({
 									where: {
 										id: guild.id as string,
 									},

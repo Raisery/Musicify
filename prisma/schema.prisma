@@ -55,67 +55,80 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model AdvertGuild {
-  id                      String @id
-  
-  name                    String
-  durationLimit           DateTime?
-  
-  songs                   AdvertSong[]        @relation(name: "song.guildId")
-  users                   AdvertUser[]        @relation(name: "userguilds")
-  adverts                 Advert[]            @relation(name: "advert.guildId")
-  events                  AdvertGuildEvent[]  @relation(name: "event.guildId")
+model NobleUser {
+  id          String           @id
+  name        String
+  guilds      Guild[]          @relation(name: "NobleUserToGuilds")
+  voiceEvents UserVoiceEvent[] @relation(name: "NobleUserToUserVoiceEvent")
+  songs       Song[]           @relation(name: "NobleUserToSong")
+  musics      Music[]          @relation(name: "NobleUserToMusic")
+  playlists   Playlist[]       @relation(name: "NobleUserToPlaylist")
 }
 
-model AdvertSong {
-  id                    String                @id @default(cuid())
-
-  title                 String
-  duration              DateTime?
-  defaultVolume         Float
-  isGlobal              Boolean               @default(false)
-
-  guildId               String    
-  authorId              String    
-
-  createAt              DateTime              @default(now())
-
-  guild                 AdvertGuild           @relation(name: "song.guildId",fields: [guildId], references: [id], onDelete: Cascade)
-  author                AdvertUser            @relation(name:"song.authorId",fields: [authorId], references: [id])
-  adverts               Advert[]              @relation(name: "advert.dongId")
-  events                AdvertGuildEvent[]    @relation(name: "event.songId")
+model Guild {
+  id          String            @id
+  name        String
+  users       NobleUser[]       @relation(name: "NobleUserToGuilds")
+  songs       Song[]            @relation(name: "GuildsToSong")
+  voiceEvents GuildVoiceEvent[] @relation(name: "GuildToGuildVoiceEvent")
+  musics      Music[]           @relation(name: "GuildToMusic")
+  playlists   Playlist[]        @relation(name: "GuildToPlaylist")
+  usersEvents UserVoiceEvent[]  @relation(name: "GuildToUserVoiceEvent")
+  ownerId     String
 }
 
-model AdvertUser {
-  id        String @id
-  name      String
-  
-  guilds    AdvertGuild[] @relation(name: "userguilds")
-  songs     AdvertSong[]  @relation(name: "song.authorId")
-  adverts   Advert[]      @relation(name: "advert.userId")
-}
-
-model Advert {
-  id        String @id @default(cuid())
-  
-  active    Boolean @default(true)
-  
-  guildId   String
-  userId    String
-  songId    String
-  
-  guild     AdvertGuild @relation(name: "advert.guildId",fields: [guildId], references: [id], onDelete: Cascade)
-  user      AdvertUser @relation(name: "advert.userId",fields: [userId], references: [id], onDelete: Cascade)
-  song      AdvertSong  @relation(name: "advert.dongId",fields: [songId], references: [id], onDelete: Cascade)
-}
-
-model AdvertGuildEvent {
-  id      String @id @default(cuid())
-
-  name    String
-  songId  String
+model UserVoiceEvent {
+  id      Int       @id @default(autoincrement())
+  type    String
+  user    NobleUser @relation(name: "NobleUserToUserVoiceEvent", fields: [userId], references: [id])
+  userId  String    @unique
+  songId  Int
+  song    Song      @relation(name: "UserVoiceEventToSong", fields: [songId], references: [id])
+  guild   Guild     @relation(name: "GuildToUserVoiceEvent", fields: [guildId], references: [id])
   guildId String
+  isActive Boolean
+}
 
-  guild   AdvertGuild @relation(name: "event.guildId",fields: [guildId], references: [id])
-  song    AdvertSong @relation(name: "event.songId",fields: [songId], references: [id])
+model Song {
+  id              Int              @id @default(autoincrement())
+  title           String
+  duration        DateTime
+  author          NobleUser        @relation(name: "NobleUserToSong", fields: [authorId], references: [id])
+  authorId        String
+  guild           Guild            @relation(name: "GuildsToSong", fields: [guildId], references: [id])
+  guildId         String
+  userVoiceEvents UserVoiceEvent[] @relation(name: "UserVoiceEventToSong")
+  guildvoiceevent GuildVoiceEvent? @relation(name: "SongToGuildVoiceEvent")
+}
+
+model GuildVoiceEvent {
+  id      Int    @id @default(autoincrement())
+  type    String
+  guild   Guild  @relation(name: "GuildToGuildVoiceEvent", fields: [guildId], references: [id])
+  guildId String
+  song    Song   @relation(name: "SongToGuildVoiceEvent", fields: [songId], references: [id])
+  songId  Int    @unique
+  isActive Boolean
+}
+
+model Music {
+  id        Int        @id @default(autoincrement())
+  title     String
+  artist    String?
+  duration  DateTime
+  author    NobleUser  @relation(name: "NobleUserToMusic", fields: [authorId], references: [id])
+  authorId  String
+  guild     Guild      @relation(name: "GuildToMusic", fields: [guildId], references: [id])
+  guildId   String
+  playlists Playlist[] @relation(name: "MusicToPlaylist")
+}
+
+model Playlist {
+  id       Int       @id @default(autoincrement())
+  name     String
+  musics   Music[]   @relation(name: "MusicToPlaylist")
+  author   NobleUser @relation(name: "NobleUserToPlaylist", fields: [authorId], references: [id])
+  authorId String
+  guild    Guild     @relation(name: "GuildToPlaylist", fields: [guildId], references: [id])
+  guildId  String
 }
