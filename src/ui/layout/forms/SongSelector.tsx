@@ -16,14 +16,14 @@ type SongSelectorProps = {
 export default function SongSelector({ songs, event, label }: SongSelectorProps) {
 	const options = songs.map(song => {
 		return (
-			<option key={song.id + event} value={JSON.stringify(song.id)} selected>
+			<option key={song.id + event} value={JSON.stringify(song.id)}>
 				{song.title}
 			</option>
 		)
 	})
 
 	return (
-		<div>
+		<div className='text-black'>
 			<label htmlFor={event}>{label}</label>
 			<select name={event} id={event + Math.floor(Math.random())}>
 				{options}

@@ -9,15 +9,14 @@ export default async function UserSettingsPreview({
 	userId: string
 	guildId: string
 }) {
-	const userEvents = await prisma.userVoiceEvent.findMany({
-		where: {
-			guildId: guildId,
-			userId: userId,
-		},
-		include: {
-			song: true,
-		},
+	const user = await prisma.nobleUser.findUnique({
+		where: { id: userId },
+		include: { voiceEvents: { where: { guildId: guildId }, include: { song: true } } },
 	})
+
+	console.log(user)
+	if (!user) return 'USER NOT FOUND'
+	const userEvents = user.voiceEvents
 
 	const openStream = userEvents.find(event => event.type === EventType.OPEN_STREAM)
 	const closeStream = userEvents.find(event => event.type === EventType.CLOSE_STREAM)
@@ -32,19 +31,19 @@ export default async function UserSettingsPreview({
 			<h3 className='text-4xl w-full text-center'>Paramètres utilisateur</h3>
 			<div className='flex justify-between w-full'>
 				<p>Son de début de stream : </p>
-				<div>{openStream ? openStream.songId : 'AUCUN'}</div>
+				<div>{openStream ? openStream.song.title : 'AUCUN'}</div>
 			</div>
 			<div className='flex justify-between w-full'>
 				<p>Son de fin de stream : </p>
-				<div>{closeStream ? closeStream.songId : 'AUCUN'}</div>
+				<div>{closeStream ? closeStream.song.title : 'AUCUN'}</div>
 			</div>
 			<div className='flex justify-between w-full'>
 				<p>Son de connexion : </p>
-				<div>{onConnection ? onConnection.songId : 'AUCUN'}</div>
+				<div>{onConnection ? onConnection.song.title : 'AUCUN'}</div>
 			</div>
 			<div className='flex justify-between w-full'>
 				<p>Son de deconnexion : </p>
-				<div>{onDeconnection ? onDeconnection.songId : 'AUCUN'}</div>
+				<div>{onDeconnection ? onDeconnection.song.title : 'AUCUN'}</div>
 			</div>
 			<div className=' h-10 w-2/5'>
 				<PrimaryLinkButton href={'/dashboard/user-settings/' + guildId}>

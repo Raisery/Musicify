@@ -66,22 +66,23 @@ model NobleUser {
 }
 
 model Guild {
-  id          String            @id
-  name        String
-  users       NobleUser[]       @relation(name: "NobleUserToGuilds")
-  songs       Song[]            @relation(name: "GuildsToSong")
-  voiceEvents GuildVoiceEvent[] @relation(name: "GuildToGuildVoiceEvent")
-  musics      Music[]           @relation(name: "GuildToMusic")
-  playlists   Playlist[]        @relation(name: "GuildToPlaylist")
-  usersEvents UserVoiceEvent[]  @relation(name: "GuildToUserVoiceEvent")
-  ownerId     String
+  id              String            @id
+  name            String
+  users           NobleUser[]       @relation(name: "NobleUserToGuilds")
+  songs           Song[]            @relation(name: "GuildsToSong")
+  voiceEvents     GuildVoiceEvent[] @relation(name: "GuildToGuildVoiceEvent")
+  musics          Music[]           @relation(name: "GuildToMusic")
+  playlists       Playlist[]        @relation(name: "GuildToPlaylist")
+  usersEvents     UserVoiceEvent[]  @relation(name: "GuildToUserVoiceEvent")
+  ownerId         String
+  durationLimit   DateTime
 }
 
 model UserVoiceEvent {
   id      Int       @id @default(autoincrement())
   type    String
   user    NobleUser @relation(name: "NobleUserToUserVoiceEvent", fields: [userId], references: [id])
-  userId  String    @unique
+  userId  String    
   songId  Int
   song    Song      @relation(name: "UserVoiceEventToSong", fields: [songId], references: [id])
   guild   Guild     @relation(name: "GuildToUserVoiceEvent", fields: [guildId], references: [id])
@@ -93,12 +94,13 @@ model Song {
   id              Int              @id @default(autoincrement())
   title           String
   duration        DateTime
+  artist          String
   author          NobleUser        @relation(name: "NobleUserToSong", fields: [authorId], references: [id])
   authorId        String
   guild           Guild            @relation(name: "GuildsToSong", fields: [guildId], references: [id])
   guildId         String
   userVoiceEvents UserVoiceEvent[] @relation(name: "UserVoiceEventToSong")
-  guildvoiceevent GuildVoiceEvent? @relation(name: "SongToGuildVoiceEvent")
+  guildvoiceevent GuildVoiceEvent[] @relation(name: "SongToGuildVoiceEvent")
 }
 
 model GuildVoiceEvent {

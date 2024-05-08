@@ -1,8 +1,11 @@
 import prisma from '@/lib/prisma'
-import NewSongForm from '@/ui/layout/NewSongForm'
+import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import { authConfig } from '../../../../../pages/api/auth/[...nextauth]'
+import AddSongForm from '@/ui/layout/forms/AddSongForm'
 
 export default async function AddSong({ params }: { params: { guildId: string } }) {
+	const session = await getServerSession(authConfig)
 	const { guildId } = params
 	const guild = await prisma.guild.findUnique({
 		where: { id: guildId },
@@ -19,7 +22,7 @@ export default async function AddSong({ params }: { params: { guildId: string } 
 			>
 				{guild?.name}
 			</h2>
-			<NewSongForm />
+			<AddSongForm userId={session?.user.discordId as string} guildId={guildId} />
 		</div>
 	)
 }
